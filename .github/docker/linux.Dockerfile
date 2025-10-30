@@ -13,13 +13,15 @@ WORKDIR /src/libssh2/build
 RUN cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_STATIC_LIBS=ON \
     -DENABLE_ZLIB_COMPRESSION=ON \
     -DCRYPTO_BACKEND=OpenSSL \
     -DBUILD_EXAMPLES=OFF \
     -DBUILD_TESTING=OFF && \
     cmake --build . --config Release -j$(nproc) && \
     mkdir -p /output && \
-    cp src/libssh2.so* /output/
+    cp src/libssh2.so* /output/ && \
+    cp src/libssh2.a /output/ || true
 
 FROM scratch
 COPY --from=0 /output/* /

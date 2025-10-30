@@ -34,14 +34,18 @@ fi
 # Create runtime directory structure
 mkdir -p "runtimes/$PLATFORM/native"
 
-# Copy library to correct location
+# Copy libraries to correct location
 if [[ "$PLATFORM" == win-* ]]; then
   cp output/libssh2.dll "runtimes/$PLATFORM/native/"
+  cp output/libssh2.a "runtimes/$PLATFORM/native/" || cp output/libssh2.lib "runtimes/$PLATFORM/native/" || true
 elif [[ "$PLATFORM" == osx-* ]]; then
   cp output/libssh2.dylib "runtimes/$PLATFORM/native/"
+  cp output/libssh2.a "runtimes/$PLATFORM/native/" || true
 else
-  # Copy and create symlink without version suffix
+  # Copy shared library and create symlink without version suffix
   cp output/libssh2.so* "runtimes/$PLATFORM/native/"
+  # Copy static library
+  cp output/libssh2.a "runtimes/$PLATFORM/native/" || true
   # Find the actual .so file and create a symlink
   cd "runtimes/$PLATFORM/native/"
   if [ -f libssh2.so.1 ]; then

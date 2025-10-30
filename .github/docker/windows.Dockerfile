@@ -27,6 +27,7 @@ RUN cmake .. \
     -DCMAKE_RC_COMPILER=${TARGET_TRIPLE}-windres \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_STATIC_LIBS=ON \
     -DENABLE_ZLIB_COMPRESSION=OFF \
     -DCRYPTO_BACKEND=OpenSSL \
     -DOPENSSL_ROOT_DIR=/opt/openssl-${TARGET_TRIPLE} \
@@ -34,7 +35,8 @@ RUN cmake .. \
     -DBUILD_TESTING=OFF && \
     cmake --build . --config Release -j$(nproc) && \
     mkdir -p /output && \
-    cp src/libssh2.dll /output/ || cp src/libssh2-*.dll /output/libssh2.dll
+    cp src/libssh2.dll /output/ || cp src/libssh2-*.dll /output/libssh2.dll && \
+    cp src/libssh2.a /output/ || cp src/libssh2.lib /output/ || true
 
 FROM scratch
 COPY --from=0 /output/* /

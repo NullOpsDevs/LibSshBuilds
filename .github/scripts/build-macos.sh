@@ -38,6 +38,7 @@ cd build
 cmake .. \
   -DCMAKE_BUILD_TYPE=Release \
   -DBUILD_SHARED_LIBS=ON \
+  -DBUILD_STATIC_LIBS=ON \
   -DENABLE_ZLIB_COMPRESSION=ON \
   -DCRYPTO_BACKEND=OpenSSL \
   -DOPENSSL_ROOT_DIR="$OPENSSL_PREFIX" \
@@ -58,4 +59,13 @@ if [ -n "$DYLIB_FILE" ]; then
 else
   echo "Error: Could not find libssh2 dylib file"
   exit 1
+fi
+
+# Copy the static library
+STATIC_FILE=$(find src -name "libssh2.a" -type f | head -n 1)
+if [ -n "$STATIC_FILE" ]; then
+  cp "$STATIC_FILE" "$OUTPUT_DIR/libssh2.a"
+  echo "Copied static library: libssh2.a"
+else
+  echo "Warning: Could not find libssh2 static library"
 fi
