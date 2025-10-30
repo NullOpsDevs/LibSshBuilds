@@ -121,6 +121,22 @@ jobs:
           echo "Release assets:"
           ls -lh release-assets/
 
+      - name: Generate file hashes
+        id: hashes
+        run: |
+          cd release-assets
+          echo "## File Hashes (SHA256)" > hashes.txt
+          echo "" >> hashes.txt
+          echo "\`\`\`" >> hashes.txt
+          sha256sum *.zip >> hashes.txt
+          echo "\`\`\`" >> hashes.txt
+          cat hashes.txt
+          # Store hashes in output (escape newlines for GitHub Actions)
+          HASHES=$(cat hashes.txt)
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$HASHES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -129,6 +145,8 @@ jobs:
             Built for libssh2@${{ steps.libssh2-info.outputs.short }} (committed on ${{ steps.libssh2-info.outputs.date }})
 
             Full commit: ${{ steps.libssh2-info.outputs.sha }}
+
+            ${{ steps.hashes.outputs.content }}
           files: release-assets/*.zip
           draft: false
           prerelease: false

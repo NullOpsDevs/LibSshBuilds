@@ -2,6 +2,8 @@
 
 Pre-compiled native libssh2 libraries for multiple platforms. This repository automates the building of [libssh2](https://github.com/libssh2/libssh2) for various operating systems and architectures.
 
+~~Proudly~~ vibecoded by Claude Code.
+
 ## Supported Platforms
 
 - **Windows**: x64
