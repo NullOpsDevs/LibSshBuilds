@@ -90,9 +90,12 @@ jobs:
           COMMIT_SHA=$(git rev-parse HEAD)
           COMMIT_SHORT=$(git rev-parse --short HEAD)
           COMMIT_DATE=$(git log -1 --format=%cd --date=short)
+          # Try to get the tag, if it exists
+          TAG=$(git describe --tags --exact-match 2>/dev/null || echo "")
           echo "sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
           echo "short=$COMMIT_SHORT" >> $GITHUB_OUTPUT
           echo "date=$COMMIT_DATE" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Organize native libraries for release
         run: |
@@ -121,7 +124,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          name: ${{ github.ref_name }}
+          name: ${{ steps.libssh2-info.outputs.tag || steps.libssh2-info.outputs.short }}
           body: |
             Built for libssh2@${{ steps.libssh2-info.outputs.short }} (committed on ${{ steps.libssh2-info.outputs.date }})
 
