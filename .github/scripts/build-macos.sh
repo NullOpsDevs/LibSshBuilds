@@ -3,6 +3,7 @@ set -e
 
 PLATFORM=$1
 ARCH=$2
+DEBUG_LOGGING=${3:-OFF}
 
 # Install dependencies
 brew install cmake openssl@3
@@ -43,6 +44,7 @@ cmake .. \
   -DCRYPTO_BACKEND=OpenSSL \
   -DOPENSSL_ROOT_DIR="$OPENSSL_PREFIX" \
   -DCMAKE_OSX_ARCHITECTURES=$ARCH \
+  -DENABLE_DEBUG_LOGGING=$DEBUG_LOGGING \
   -DBUILD_EXAMPLES=OFF \
   -DBUILD_TESTING=OFF
 

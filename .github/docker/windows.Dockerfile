@@ -1,5 +1,6 @@
 FROM debian:bookworm-slim
 ARG TARGET_TRIPLE
+ARG DEBUG_LOGGING=OFF
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -31,6 +32,7 @@ RUN cmake .. \
     -DENABLE_ZLIB_COMPRESSION=OFF \
     -DCRYPTO_BACKEND=OpenSSL \
     -DOPENSSL_ROOT_DIR=/opt/openssl-${TARGET_TRIPLE} \
+    -DENABLE_DEBUG_LOGGING=${DEBUG_LOGGING} \
     -DBUILD_EXAMPLES=OFF \
     -DBUILD_TESTING=OFF && \
     cmake --build . --config Release -j$(nproc) && \

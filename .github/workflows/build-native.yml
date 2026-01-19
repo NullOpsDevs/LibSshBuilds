@@ -13,15 +13,32 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Release builds
           - platform: win-x64
             dockerfile_platform: linux/amd64
             target_triple: x86_64-w64-mingw32
+            debug_logging: OFF
           - platform: linux-x64
             dockerfile_platform: linux/amd64
             target_triple: x86_64-linux-gnu
+            debug_logging: OFF
           - platform: linux-arm64
             dockerfile_platform: linux/arm64
             target_triple: aarch64-linux-gnu
+            debug_logging: OFF
+          # Debug logging builds
+          - platform: win-x64-debug
+            dockerfile_platform: linux/amd64
+            target_triple: x86_64-w64-mingw32
+            debug_logging: ON
+          - platform: linux-x64-debug
+            dockerfile_platform: linux/amd64
+            target_triple: x86_64-linux-gnu
+            debug_logging: ON
+          - platform: linux-arm64-debug
+            dockerfile_platform: linux/arm64
+            target_triple: aarch64-linux-gnu
+            debug_logging: ON
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,7 +53,7 @@ jobs:
       - name: Build libssh2
         run: |
           chmod +x .github/scripts/build-native.sh
-          .github/scripts/build-native.sh "${{ matrix.platform }}" "${{ matrix.target_triple }}" "${{ matrix.dockerfile_platform }}"
+          .github/scripts/build-native.sh "${{ matrix.platform }}" "${{ matrix.target_triple }}" "${{ matrix.dockerfile_platform }}" "${{ matrix.debug_logging }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -50,10 +67,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Release builds
           - platform: osx-x64
             arch: x86_64
+            debug_logging: OFF
           - platform: osx-arm64
             arch: arm64
+            debug_logging: OFF
+          # Debug logging builds
+          - platform: osx-x64-debug
+            arch: x86_64
+            debug_logging: ON
+          - platform: osx-arm64-debug
+            arch: arm64
+            debug_logging: ON
     steps:
       - uses: actions/checkout@v4
         with:
@@ -62,7 +89,7 @@ jobs:
       - name: Build libssh2 for macOS
         run: |
           chmod +x .github/scripts/build-macos.sh
-          .github/scripts/build-macos.sh "${{ matrix.platform }}" "${{ matrix.arch }}"
+          .github/scripts/build-macos.sh "${{ matrix.platform }}" "${{ matrix.arch }}" "${{ matrix.debug_logging }}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

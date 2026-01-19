@@ -1,4 +1,5 @@
 FROM debian:bookworm-slim
+ARG DEBUG_LOGGING=OFF
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -16,6 +17,7 @@ RUN cmake .. \
     -DBUILD_STATIC_LIBS=ON \
     -DENABLE_ZLIB_COMPRESSION=ON \
     -DCRYPTO_BACKEND=OpenSSL \
+    -DENABLE_DEBUG_LOGGING=${DEBUG_LOGGING} \
     -DBUILD_EXAMPLES=OFF \
     -DBUILD_TESTING=OFF && \
     cmake --build . --config Release -j$(nproc) && \
